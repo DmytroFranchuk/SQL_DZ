@@ -1,0 +1,75 @@
+use hr;
+
+-- select department_id  from employees where salary > 10000
+
+-- 1. Найти департаменты в которых есть работники, зарабатывающие больше 10 000. 
+-- В результате выборки формируются два поля (department_id и поле 
+-- со значениями 1 или 0) (использовать метод max) 
+-- Функции Min и Max вычисляют минимальное и максимальное значение 
+-- по столбцу соответственно 
+-- https://metanit.com/sql/mysql/4.5.php 
+
+SELECT 
+    department_id, max(IF(salary > 10000, 1, 0)) AS bigSalary
+FROM
+    employees
+GROUP BY department_id
+ORDER BY bigSalary desc, department_id;
+
+-- 2. Найти департаменты в которых все работники зарабатывают больше 10 000. 
+-- В результате выборки формируются два поля (department_id и поле 
+-- со значениями 1 или 0)  (использовать метод min)
+SELECT 
+    department_id, MIN(IF(salary > 10000, 1, 0)) AS bigSalary
+FROM
+    employees
+GROUP BY department_id
+ORDER BY bigSalary DESC , department_id;
+
+-- select salary from employees where department_id = 90;
+
+-- 3. Отсортировать сотрудников по фамилии в алфавитном порядке
+SELECT 
+    last_name
+FROM
+    employees
+ORDER BY last_name;
+
+-- 4. Отсортировать сотрудников по зарплате - от самой большой зарплаты до 
+-- самой маленькой
+SELECT 
+    last_name, salary
+FROM
+    employees
+ORDER BY salary DESC;
+
+-- 5. Вывести сотрудников, работающих в департаментах с id 60, 90 и 110, 
+-- отсортированными в алфавитном порядке по фамилии (оператор in).
+-- in - Оператор IN определяет набор значений, которые должны иметь столбцы
+-- https://metanit.com/sql/mysql/4.2.php
+SELECT 
+    last_name, first_name, department_id
+FROM
+    employees
+WHERE
+    department_id IN (60 , 90, 110)
+ORDER BY last_name;
+-- 6. Вывести сотрудников с jobid ST_CLERK, отсортированными по зарплате - 
+-- от самой большой зарплаты до самой маленькой.
+SELECT 
+    last_name, first_name, salary
+FROM
+    employees
+WHERE
+    job_id = 'ST_CLERK'
+ORDER BY salary desc;
+
+-- 7. Вывести сотрудников, чьи имена начинаются на букву D и отсортировать 
+-- их в алфавитном порядке по фамилии
+SELECT 
+    last_name, first_name
+FROM
+    employees
+WHERE
+    first_name LIKE 'D%'
+ORDER BY last_name;
