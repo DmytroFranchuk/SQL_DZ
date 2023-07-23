@@ -1,0 +1,177 @@
+db.students.insertMany([{ 
+  name: "David",
+  lastname: "Johnson",
+  marks: [5, 5, 4, 5, 5, 5, 4, 3, 4],
+  subjects: ["Math", "Physics", "Chemistry"],
+  class: 1
+},
+{ 
+  name: "Daniel",
+  lastname: "Miller",
+  marks: [3, 3, 4, 4, 3, 4, 3, 4, 4, 3],
+  subjects: ["Math", "Physics", "Chemistry", "Geography"],
+  class: 1
+},
+{ 
+  name: "James",
+  lastname: "Lee",
+  marks: [3, 3, 4, 4, 3, 4, 3, 4, 4, 3],
+  subjects: ["Math", "Physics", "Chemistry", "Geography"],
+  class: 1
+},
+{ 
+  name: "Daniel",
+  lastname: "Clark",
+  marks: [3, 3, 4, 4, 3, 4, 3, 4, 4, 3],
+  subjects: ["Math", "Physics", "Chemistry", "Geography"],
+  class: 1
+},
+{    
+  name: "John",
+  lastname: "Doe",
+  marks: [4, 3, 5, 4, 5, 3, 4, 4, 3, 5, 2, 5, 4],
+  subjects: ["Math", "Science", "English", "History"],
+  class: 2
+},
+{ 
+  name: "Michael",
+  lastname: "Brown",
+  marks: [2, 3, 4, 3, 4, 3, 4, 4, 4, 3, 4, 3, 4, 3],
+  subjects: ["Math", "Science", "English"],
+  class: 2
+},
+{ 
+  name: "Benjamin",
+  lastname: "Thompson",
+  marks: [3, 4, 3, 4, 4, 3, 4, 3, 4, 4, 3],
+  subjects: ["Math", "Science", "English"],
+  class: 2
+},
+{ 
+  name: "Matthew",
+  lastname: "Wilson",
+  marks: [3, 4, 3, 4, 4, 3, 4, 3, 4, 4, 3],
+  subjects: ["Math", "Science", "English"],
+  class: 2
+},
+{ 
+  name: "Isabella",
+  lastname: "Garcia",
+  marks: [4, 5, 4, 3, 4, 5, 5, 5, 5, 4, 5],
+  subjects: ["Math", "Science", "English", "History", "Art"],
+  class: 3
+},
+{ 
+  name: "Jane",
+  lastname: "Smith",
+  marks: [3, 4, 3, 4, 3, 4, 4, 5, 4, 4, 3],
+  subjects: ["Math", "Science", "English", "Geography", "Art"],
+  class: 3
+},  
+{ 
+  name: "Emily",
+  lastname: "Davis",
+  marks: [4, 5, 4, 3, 4, 5, 5, 5, 5, 4, 5],
+  subjects: ["Math", "Science", "English", "History", "Art"],
+  class: 3
+},
+{ 
+  name: "Ava",
+  lastname: "Taylor",
+  marks: [4, 5, 4, 3, 4, 5, 5, 5, 5, 4, 5],
+  subjects: ["Math", "Science", "English", "History", "Art"],
+  class: 3
+},
+{ 
+  name: "Sarah",
+  lastname: "Williams",
+  marks: [3, 4, 3, 4, 4, 3, 4, 3, 4, 4, 3],
+  subjects: ["Math", "Science", "English", "History", "Geography"],
+  class: 4
+}, 
+{ 
+  name: "Olivia",
+  lastname: "Anderson",
+  marks: [4, 3, 4, 3, 4, 4, 4, 3, 4, 4, 4, 3, 4],
+  subjects: ["Math", "Science", "English", "History", "Geography"],
+  class: 4
+}, 
+{ 
+  name: "Sophia",
+  lastname: "Martin",
+  marks: [4, 3, 4, 3, 4, 4, 4, 3, 4, 4, 4, 3, 4],
+  subjects: ["Math", "Science", "English", "History", "Geography"],
+  class: 4
+}])
+
+Выведите средний балл по всем предметам для каждого студента.
+db.students.aggregate([
+  {
+    $project: {
+      name: 1,
+      lastname: 1,
+      average_mark: { $avg: "$marks" }
+    }
+  }
+])
+
+Получите список студентов, у которых есть оценка ниже 3.
+db.students.aggregate([
+  {
+    $unwind: "$marks" 
+  },
+  {
+    $match: {
+      marks: { $lt: 3 }
+    }
+  },
+  {
+    $group: {
+      _id: "$_id", 
+      name: { $first: "$name" }, 
+      lastname: { $first: "$lastname" }, 
+      marks: { $push: "$marks" } 
+    }
+  }
+])
+
+Подсчитайте количество студентов в каждом классе.
+db.students.aggregate([
+  {
+    $sort: { class: 1 }
+  },
+  {
+    $group: {
+      _id: "$class",
+      count: { $sum: 1 }
+    }
+  }
+]);
+
+Рассчитайте суммарное количество оценок по каждому классу.
+db.students.aggregate([
+  {
+    $unwind: "$marks"
+  },
+  {
+    $group: {
+      _id: "$class",
+      totalMarks: { $sum: 1 }
+    }
+  }
+])
+
+Рассчитайте средний балл для каждого студента.
+db.students.aggregate([
+  {
+    $unwind: "$marks" 
+  },
+  {
+    $group: {
+      _id: "$_id", 
+      name: { $first: "$name" }, 
+      lastname: { $first: "$lastname" }, 
+      averageMark: { $avg: "$marks" } 
+    }
+  }
+])
